@@ -1,5 +1,44 @@
+import { useEffect, useState } from 'react';
+import axios, { AxiosError, AxiosResponse } from 'axios';
+import { api_url } from './constants/index.ts';
+
 function App() {
-  return <p>Hello, world!</p>;
+  const [response, setResponse] = useState<AxiosResponse<string> | null>(null);
+  const [error, setError] = useState<AxiosError | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    const checkAPIstatus = async () => {
+      try {
+        setResponse(null);
+        setLoading(true);
+
+        const response: AxiosResponse<string> = await axios.get(
+          `${api_url}/status`
+        );
+
+        setResponse(response);
+      } catch (err) {
+        if (err instanceof AxiosError) setError(err);
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    checkAPIstatus();
+  }, []);
+
+  return (
+    <>
+      {loading && <p>Loading...</p>}
+      {response && (
+        <p>
+          {response.status} : {response.data}
+        </p>
+      )}
+      {error && <p>{error.message}</p>}
+    </>
+  );
 }
 
 export default App;
