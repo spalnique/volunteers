@@ -17,12 +17,18 @@ function App() {
           `${api_url}/status`
         );
 
-        setResponse(response);
+        const tId = setTimeout(() => {
+          setResponse(response);
+          clearTimeout(tId);
+        }, 1000);
       } catch (err) {
         if (err instanceof AxiosError) setError(err);
         console.error(err);
       } finally {
-        setLoading(false);
+        const tId = setTimeout(() => {
+          setLoading(false);
+          clearTimeout(tId);
+        }, 1000);
       }
     };
     checkAPIstatus();
